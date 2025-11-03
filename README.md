@@ -68,3 +68,61 @@ Cursor Movement in OS/Game
 * Reduced inference time improves responsiveness and smoothness of cursor tracking.
 * **Robustness** is tested under conditions like lighting variation, motion blur, occlusion, and color changes to balance precision and recall.
 * Overall, the system operates as a **vision-based pipeline** of “see → decide → move,” without reading from or modifying any game memory or files.
+
+# **How it works:**
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/76c8ae7f-8bdf-4cdc-a003-ddf5a013032d" />
+
+
+
+# Vision → Arduino HID Demo — Setup Guide
+---
+
+## System requirements
+- **GPU:** RTX 2060 (min) — RTX 3050 recommended — RTX 4060 for fastest performance  
+- **OS:** Windows (screen capture & HID support tested)  
+- **Python:** 3.9+ (virtualenv recommended)  
+- **CUDA:** 12.1 (if using GPU)
+
+---
+
+## 1) Arduino — prepare HID firmware
+1. Install **Arduino IDE 1.8.xx**.  
+2. Install **USB Host Shield 2.0** libraries (Library Manager or ZIP).  
+3. Open `mouse/mouse.ino` and set mapping to match the byte layout your PC script sends. Example mapping:
+   ```cpp
+   // byte buffer mapping (adjust indices to match your PC script)
+   buttons = buf[0];
+   xm      = buf[2];
+   ym      = buf[4];
+   scr     = buf[6];
+(I use Logitech G Pro X superlight, can also try 0, 1, 2, 3 respectively.)
+
+Upload to Arduino Leonardo. Test by sending simple serial packets and verifying cursor moves. Iterate until mapping matches expected behavior.
+
+## 2) Python + YOLOv5 environment
+
+Install Python 3.9+ (virtualenv recommended).
+Install CUDA 12.1 and matching PyTorch wheel. Example pip (CUDA 12.1):
+```cpp pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu121 ```
+
+Clone / prepare YOLOv5 copy (your repo path):
+```cpp
+cd v/scripts
+ensure yolov5-master is present
+cd yolov5-master
+pip install -r requirements.txt
+```
+Install extras:
+```cpppip install pyserial pywin32 keyboard termcolor scipy==1.12.0```
+
+## 3) Configure the Python script
+
+Set serial port to your Arduino: ```cpp
+ard = serial.Serial("COM3", 9600, writeTimeout=0)
+Replace "COM3" with the port shown in Device Manager. ```
+
+Adjust detection / timing parameters for your hardware:
+time.sleep(...) loop interval (lower = faster; tune to GPU + USB throughput)
+confidence / NMS thresholds inside YOLO inference
+
+Keep mouse settings neutral on Windows (for consistent mapping) — you can use default sensitivity and test in a local window.
