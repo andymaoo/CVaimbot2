@@ -1,10 +1,11 @@
-Valorant CV-based aimbot: vision-to-hardware pipeline that captures live screen data, uses a YOLOv5 model for real-time object detection, and sends cursor movement commands to an Arduino Leonardo emulating a USB mouse.
 
 # **How it works:**
+Valorant CV-based aimbot: vision-to-hardware pipeline that captures live screen data, uses a YOLOv5 model for real-time object detection, and sends cursor movement commands to an Arduino Leonardo emulating a USB mouse.
+
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/76c8ae7f-8bdf-4cdc-a003-ddf5a013032d" />
 
 
-**High-Level Project Pipeline Overview**
+ # **High-Level Project Pipeline Overview**
 
 Game Feed (Live View)
 
